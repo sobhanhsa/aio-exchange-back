@@ -1,26 +1,28 @@
 import mongoose, { Schema, InferSchemaType , Types } from 'mongoose';
 
 const currencySchema = new Schema({
-        hash:{
-            type:String,
-            required:true
+        symbol:{
+            required:true,
+            type:String
         },
-        username: {
-            unique:true,
-            type: String,
-            required: true,
-            min: 3,
-            max: 20,
+        name:{
+            en:String,
+            fa:String
         },
-        email: {
-            unique:true,
-            type: String,
-            required: true,
+        cap:{
+            type:Number,
         },
-        messages : {
-            type:[{type:mongoose.Types.ObjectId,ref:"Message"}],
-            default:[]
+        price:{
+            required:true,
+            type:Number
         },
+        percentChangeWeek:{
+            type:Number
+        },
+        percentChangeDay:{
+            type:Number
+        },
+        history:[{time:Date,price:Number}]
     },
     { timestamps: true }
 );
