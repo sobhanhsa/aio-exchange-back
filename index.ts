@@ -4,7 +4,7 @@ configDotenv()
 
 import express from "express";
 import cookieParser from "cookie-parser";
-import userRouter from "./routers/userRouter";
+import userRouter from "./routers/user.router";
 
 const port = process.env.PORT || 8000;
 
