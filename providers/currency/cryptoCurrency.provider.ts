@@ -1,5 +1,5 @@
-import { CreateCurrency, UpdateCurrency } from "../../../db/currency/utils";
-import { CurrencyModel } from "../../../models/currencyModel";
+import { CreateCurrency, UpdateCurrency } from "../../db/currency/utils";
+import { CurrencyModel } from "../../models/currencyModel";
 
 const fetcher = async() => {
     const res = await fetch("https://api.wallex.ir/v1/currencies/stats");
