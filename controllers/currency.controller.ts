@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { FindCurrency } from "../db/currency/utils";
+import { FindCurrencyByeSymbol } from "../db/currency/currency.utils";
 
 
-export async function getByeSymbol(req:Request, res:Response) {
+export async function getByeSymbolHandler(req:Request, res:Response) {
     const symbol = req.params.symbol;
     if (!symbol) return res.status(400).json({
         message:"no symbol provided"
     });
     try {
-        const currency = await FindCurrency(symbol);
+        const currency = await FindCurrencyByeSymbol(symbol.toUpperCase());
         return res.status(200).json({
             message:"success",
             currency
