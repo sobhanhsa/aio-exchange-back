@@ -12,15 +12,12 @@ export const SyncGlobalCrypto = async() => {
     try {
         const body = await fetcher();
         const currencies : any[] = body.result; 
-        // console.log("SyncGlobalCrypto provider : ",currencies);
         await connectToDB();
-        await CurrencyModel.deleteMany({});
         currencies.forEach(async(c) => {
             //POST or UPDATE each currency
             const existed = await CurrencyModel.exists({
                 symbol:c.key
             });
-            console.log("SyncGlobalCrypto : ",existed);
             if (!existed) {
                 await CreateCurrency(
                     {
