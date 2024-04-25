@@ -22,7 +22,14 @@ const currencySchema = new Schema({
         percentChangeDay:{
             type:Number
         },
-        history:[{time:Date,price:Number}]
+        history:{
+            type:[{time:Date,price:Number}],
+            required:false
+        },
+        currencyType:{
+            type:String,
+            required:true
+        }
     },
     { timestamps: true }
 );
@@ -31,6 +38,11 @@ const currencySchema = new Schema({
 export type CurrencyType = InferSchemaType<typeof currencySchema> & {
     _id:string
 };
+
+export type CurrencyDtoType = Omit<
+    CurrencyType,
+    "updatedAt"|"createdAt"|"NativeDate"|"_id"
+>;
 
 
 
