@@ -6,7 +6,7 @@ import { Request, Response , NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import bcrypt from "bcrypt";
-import { UserModel, UserType } from "../models/userModel";
+import { UserModel, UserType } from "../models/user.model";
 import { connectToDB } from "../db/utils";
 const saltRounds = 10;
 

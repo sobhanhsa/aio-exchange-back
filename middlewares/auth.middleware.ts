@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {UserModel} from "../models/userModel";
+import {UserModel} from "../models/user.model";
 import { NextFunction, Request, Response } from "express";
 import { connectToDB } from "../db/utils";
 

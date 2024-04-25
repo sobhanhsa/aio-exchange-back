@@ -1,4 +1,4 @@
-import { CurrencyDtoType, CurrencyModel, CurrencyType } from "../../models/currencyModel";
+import { CurrencyDtoType, CurrencyModel, CurrencyType } from "../../models/currency.model";
 import { connectToDB } from "../utils";
 
 export const CreateCurrency = async (
