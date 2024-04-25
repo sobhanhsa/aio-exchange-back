@@ -1,4 +1,5 @@
-import { CreateCurrency, UpdateCurrency } from "../../db/currency/utils";
+import { CreateCurrency, UpdateCurrency } from "../../db/currency/currency.utils";
+import { connectToDB } from "../../db/utils";
 import { CurrencyModel } from "../../models/currencyModel";
 
 const fetcher = async() => {
@@ -11,31 +12,45 @@ export const SyncGlobalCrypto = async() => {
     try {
         const body = await fetcher();
         const currencies : any[] = body.result; 
+        // console.log("SyncGlobalCrypto provider : ",currencies);
+        await connectToDB();
+        await CurrencyModel.deleteMany({});
         currencies.forEach(async(c) => {
             //POST or UPDATE each currency
             const existed = await CurrencyModel.exists({
                 symbol:c.key
             });
+            console.log("SyncGlobalCrypto : ",existed);
             if (!existed) {
                 await CreateCurrency(
-                    c.key,
-                    c.name_en,
-                    c.name,
-                    c.price,
-                    c.market_cap,
-                    c.percent_change_7d,
-                    c.percent_change_24h
+                    {
+                        symbol: c.key,
+                        name:{
+                            en: c.name_en,
+                            fa: c.name
+                        },
+                        price:c.price,
+                        currencyType:"crypto",
+                        cap:c.market_cap,
+                        percentChangeWeek:c.percent_change_7d,
+                        percentChangeDay:c.percent_change_24h
+                    }
                 );
                 return
             };
             await UpdateCurrency(
-                c.key,
-                c.name_en,
-                c.name,
-                c.price,
-                c.market_cap,
-                c.percent_change_7d,
-                c.percent_change_24h
+                {
+                    symbol: c.key,
+                    name:{
+                        en: c.name_en,
+                        fa: c.name
+                    },
+                    price:c.price,
+                    currencyType:"crypto",
+                    cap:c.market_cap,
+                    percentChangeWeek:c.percent_change_7d,
+                    percentChangeDay:c.percent_change_24h
+                }
             );
         });
     } catch (err:any) {
