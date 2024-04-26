@@ -18,7 +18,7 @@ const currencySchema = new Schema({
 
         },
         price:{
-            required:true,
+            required:false,
             type:Number
         },
         percentChangeWeek:{
