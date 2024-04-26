@@ -37,6 +37,10 @@ export const SyncGlobalCrypto = async() => {
             };
             await UpdateCurrency(
                 {
+                    symbol:c.key
+                }
+                ,
+                {
                     symbol: c.key,
                     name:{
                         en: c.name_en,
