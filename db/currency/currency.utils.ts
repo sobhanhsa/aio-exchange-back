@@ -10,7 +10,8 @@ export const CreateCurrency = async (
         cap,
         percentChangeWeek,
         percentChangeDay,
-        history
+        history,
+        time
     }:CurrencyDtoType
 ) => {
     try {
@@ -25,7 +26,8 @@ export const CreateCurrency = async (
             price,
             cap,
             percentChangeWeek,
-            percentChangeDay
+            percentChangeDay,
+            time
         });
     } catch (err:any) {
         throw new Error(err.messsage);
@@ -33,6 +35,8 @@ export const CreateCurrency = async (
 };
 
 export const UpdateCurrency = async (
+    filter:any
+    ,
     {
         symbol,
         name,
@@ -41,25 +45,28 @@ export const UpdateCurrency = async (
         cap,
         percentChangeWeek,
         percentChangeDay,
-        history
+        history,
+        time
     }:CurrencyDtoType
 ) => {
     try {
         await connectToDB();
-        const currency = await CurrencyModel.updateOne({
-            symbol
-        },{
-            symbol,
-            name:{
-                en:name?.en,
-                fa:name?.fa
-            },
-            currencyType,
-            price,
-            cap,
-            percentChangeWeek,
-            percentChangeDay
-        });
+        const currency = await CurrencyModel.updateOne(
+            filter,
+            {
+                symbol,
+                name:{
+                    en:name?.en,
+                    fa:name?.fa
+                },
+                currencyType,
+                price,
+                cap,
+                percentChangeWeek,
+                percentChangeDay,
+                time
+            }
+        );
     } catch (err:any) {
         throw new err.message
     }
