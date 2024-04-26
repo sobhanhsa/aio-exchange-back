@@ -6,6 +6,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import userRouter from "./routers/user.router";
 import { SyncGlobalCrypto } from "./providers/currency/cryptoCurrency.provider";
+import { SyncGlobalCurrency } from "./providers/currency/currency.provider";
 import currencyRouter from "./routers/currency.router";
 
 const port = process.env.PORT || 8000;
@@ -18,11 +19,15 @@ app.use(express.json());
 app.use("/user",userRouter);
 app.use("/currency",currencyRouter);
 
-app.listen(port, () => {
+app.listen(port, async() => {
     console.log("server in running on port %d",port)
     try {
-        SyncGlobalCrypto();
+        setInterval(() => {
+            console.log("onappListen : syncing prices ...");
+            SyncGlobalCurrency();
+            SyncGlobalCrypto();
+        },5*60*1000);
     } catch (err:any) {
-        console.log("error in on listen : ",err.message);
+        console.log("error in onListen : ",err.message);
     }
 });
