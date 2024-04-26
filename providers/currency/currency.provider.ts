@@ -96,7 +96,7 @@ export const SyncGlobalCurrency = async() => {
                             fa: symbolToNames[cSymbol].fa
                         },
                         time:new Date(currency.time),
-                        price:currency.price,
+                        priceIrr:currency.price,
                         currencyType:"currency",
                     }
                 );
@@ -113,7 +113,7 @@ export const SyncGlobalCurrency = async() => {
                         en: symbolToNames[cSymbol].en,
                         fa: symbolToNames[cSymbol].fa
                     },
-                    price:currency.price,
+                    priceIrr:currency.price,
                     currencyType:"currency",
                     time:new Date(currency.time)
                 }
