@@ -12,6 +12,11 @@ const currencySchema = new Schema({
         cap:{
             type:Number,
         },
+        priceIrr:{
+            type:Number,
+            required:false
+
+        },
         price:{
             required:true,
             type:Number
@@ -29,6 +34,11 @@ const currencySchema = new Schema({
         currencyType:{
             type:String,
             required:true
+        },
+        time:{
+            required:false,
+            type:Date,
+            default:Date.now
         }
     },
     { timestamps: true }
