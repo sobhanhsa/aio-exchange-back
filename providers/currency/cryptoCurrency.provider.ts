@@ -49,6 +49,7 @@ export const SyncGlobalCrypto = async() => {
                     price:c.price,
                     currencyType:"crypto",
                     cap:c.market_cap,
+                    time:new Date,
                     percentChangeWeek:c.percent_change_7d,
                     percentChangeDay:c.percent_change_24h
                 }
