@@ -10,6 +10,109 @@ import { UserModel, UserType } from "../models/user.model";
 import { connectToDB } from "../db/utils";
 const saltRounds = 10;
 
+//POST : AUTH BE CHECKED
+export async function addFavoriteHandler(req:Request,res:Response) {
+
+    const body : {
+        newFavorites:string[]
+    } = req.body;
+
+    const user : UserType = (req as any).user;
+
+    try {
+        await connectToDB();
+
+        const result = await UserModel.updateOne({
+            _id:user._id
+        },{
+            $addToSet:{
+                favorites:{$each:[...body.newFavorites]}
+            }
+        });
+
+        return res.status(201).json({
+            message:"success",
+            result
+        })
+
+    } catch (error:any) {
+        console.log("error in addFavoriteHandler : ",error.message);
+        return res.status(500).json(
+            {
+                message:"some thing went wrong",
+                error:error.message
+            }
+        )
+    }
+
+
+}
+
+// GET : AUTH BE CHECKED
+export async function findFavoriteHandler(req:Request,res:Response) {
+
+    const user : UserType = (req as any).user;
+
+    try {
+        await connectToDB();
+
+        const favorites = await UserModel.findById(user._id)
+            .select("favorites"); 
+
+        return res.status(200).json({
+            favorites,
+        });
+
+    } catch (error:any) {
+        console.log("error in findFavoriteHandler : ",error.message);
+        return res.status(500).json(
+            {
+                message:"some thing went wrong",
+                error:error.message
+            }
+        )
+    }
+
+
+}
+
+//DELETE : AUTH BE CHECKED
+export async function deleteFavoriteHandler(req:Request,res:Response) {
+
+    const body : {
+        deleteFavorites:string[]
+    } = req.body;
+
+    const user : UserType = (req as any).user;
+
+    try {
+        await connectToDB();
+
+        const result = await UserModel.updateOne({
+            _id:user._id
+        },{
+            $pull:{
+                favorites:{$in: [ ...body.deleteFavorites]}
+            }
+        });
+
+        return res.status(200).json({
+            message:"success",
+            result
+        });
+
+    } catch (error:any) {
+        console.log("error in deleteFavoriteHandler : ",error.message);
+        return res.status(500).json(
+            {
+                message:"some thing went wrong",
+                error:error.message
+            }
+        )
+    }
+
+
+}
 
 export async function signupHandler(req : Request, res : Response) {
     
