@@ -17,10 +17,11 @@ const userSchema = new Schema({
             type: String,
             required: true,
         },
-        messages : {
-            type:[{type:mongoose.Types.ObjectId,ref:"Message"}],
-            default:[]
-        },
+        favorites:{
+            required:false,
+            type:[String],
+            default:[],
+        }
     },
     { timestamps: true }
 );
@@ -29,6 +30,11 @@ const userSchema = new Schema({
 export type UserType = InferSchemaType<typeof userSchema> & {
     _id:string
 };
+
+export type UserDtoType = Omit<
+    UserType,
+    "updatedAt"|"createdAt"|"NativeDate"|"_id"
+>;
 
 
 
