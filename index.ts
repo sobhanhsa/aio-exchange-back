@@ -8,6 +8,7 @@ import userRouter from "./routers/user.router";
 import { SyncGlobalCrypto } from "./providers/currency/cryptoCurrency.provider";
 import { SyncGlobalCurrency } from "./providers/currency/currency.provider";
 import currencyRouter from "./routers/currency.router";
+import { SyncGlobalCryptoHistory } from "./providers/currency/history/cryptoCurrencyHistory.provider";
 
 const port = process.env.PORT || 8000;
 
@@ -22,10 +23,12 @@ app.use("/currency",currencyRouter);
 app.listen(port, async() => {
     console.log("server in running on port %d",port)
 
+    SyncGlobalCryptoHistory();
+
     setInterval(async() => {
         try {
             console.log("onappListen : syncing prices ...");
-            SyncGlobalCurrency();
+            await SyncGlobalCurrency();
             await SyncGlobalCrypto();
         }  catch (err:any) {
             console.log("error in onappListen : ",err.message);

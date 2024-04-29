@@ -24,6 +24,11 @@ export const SyncGlobalCryptoHistory = async() => {
         });
         
         
+        // await CurrencyModel.updateMany({currencyType:"crypto"},{
+        //     history:[]
+        // });
+
+
         const {Data:exchanges}:{Data:any[]} = await fetcher("https://min-api.cryptocompare.com/data/top/exchanges?fsym=BTC&tsym=USD&limit=100");
         
         // console.log("SyncGlobalCryptoHistory currencies : ",currencies);
@@ -44,7 +49,18 @@ export const SyncGlobalCryptoHistory = async() => {
 
                 const history : any[] = historyBody.Data.Data;
 
-                console.log(`history ${c.symbol} : `,history);
+                await CurrencyModel.updateOne({
+                    _id:c._id
+                },{
+                    $push:{
+                        history:{
+                            $each:[...((history
+                                .map(h => ({time:new Date(Number(h.time)*1000),price:h.close}))).reverse())
+                            ],
+                            $position:0
+                        }
+                    }
+                });
 
 
                 await delayMaker(75);
