@@ -16,7 +16,7 @@ const fetcher = async(url:string) => {
 
 const delayMaker = (time:number) => new Promise(resolve => setTimeout(resolve, time));
 
-export const SyncGlobalCryptoHistory = async() => {
+export const SyncGlobalCryptoHistory = async(period:number) => {
     try {
         await connectToDB();
         const currencies : CurrencyType[] = await CurrencyModel.find({
@@ -36,7 +36,7 @@ export const SyncGlobalCryptoHistory = async() => {
             const troubledCs: string[] = [  ];
             
             for (let c of currencies) {
-                const historyBody = await fetcher(`https://min-api.cryptocompare.com/data/v2/histoday?fsym=${c.symbol}&tsym=USD&limit=7`);
+                const historyBody = await fetcher(`https://min-api.cryptocompare.com/data/v2/histoday?fsym=${c.symbol}&tsym=USD&limit=${period}`);
 
                 if (historyBody?.Response !== "Success") {
                     // const newHistory = await fetcher(`https://min-api.cryptocompare.com/data/v2/histoday?fsym=${c.symbol}&tsym=USD&limit=7&e=coinbase`);
@@ -47,7 +47,19 @@ export const SyncGlobalCryptoHistory = async() => {
                     continue
                 }
 
-                const history : any[] = historyBody.Data.Data;
+                const history : {close:number,time:number}[] = historyBody.Data.Data;
+
+
+
+                if (c.history != undefined || c.history != null) {
+                    if (
+                        c.history[0].time?.getMilliseconds() 
+                        >
+                        history[history.length-1].time * 1000
+                    ) {
+                        continue
+                    }
+                }
 
                 await CurrencyModel.updateOne({
                     _id:c._id
@@ -132,7 +144,7 @@ export const SyncGlobalCryptoHistory = async() => {
             await delayMaker(1000);
         });
     } catch (err:any) {
-        console.log("error in get SyncGlobalCrypto : ",err.message);
+        console.log("error in get cryptoCurrencyHistory.provider : ",err.message);
         throw new Error(err.message);
     }
 };

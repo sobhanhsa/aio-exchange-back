@@ -23,15 +23,28 @@ app.use("/currency",currencyRouter);
 app.listen(port, async() => {
     console.log("server in running on port %d",port)
 
-    SyncGlobalCryptoHistory();
+    setInterval(async() => {
+        try {
+            
+            await SyncGlobalCryptoHistory(1);
+        }  catch (err:any) {
+            console.log(
+                "error in onappListen sync crypto history interval : "
+                ,err.message
+            );
+        }
+    },1000*60*60*24)
 
     setInterval(async() => {
         try {
             console.log("onappListen : syncing prices ...");
             await SyncGlobalCurrency();
-            await SyncGlobalCrypto();
+            // await SyncGlobalCrypto();
         }  catch (err:any) {
-            console.log("error in onappListen : ",err.message);
+            console.log(
+                "error in onappListen sync price interval: ",
+                err.message
+            );
         }
-    },5*60*1000);
+    },1000*60);
 });

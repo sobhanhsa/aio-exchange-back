@@ -4,7 +4,10 @@ import { CurrencyModel } from "../../models/currency.model";
 
 const fetcher = async() => {
     const res = await fetch("https://api.wallex.ir/v1/currencies/stats");
-    if (!res.ok) throw new Error("failed to fetch");
+    if (!res.ok) {
+        console.log("cryptoCurrency provider fetcher : ",res);
+        throw new Error("failed to fetch")
+    };
     return res.json();
 };
 

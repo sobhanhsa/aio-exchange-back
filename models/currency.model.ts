@@ -28,7 +28,7 @@ const currencySchema = new Schema({
             type:Number
         },
         history:{
-            type:[{time:Date,price:Number}],
+            type:[{time:{type:Date,required:true},price:{type:Number,required:true}}],
             required:false
         },
         currencyType:{
