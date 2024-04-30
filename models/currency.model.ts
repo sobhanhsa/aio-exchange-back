@@ -13,8 +13,8 @@ const currencySchema = new Schema({
             type:Number,
         },
         priceIrr:{
+            required:false,
             type:Number,
-            required:false
 
         },
         price:{

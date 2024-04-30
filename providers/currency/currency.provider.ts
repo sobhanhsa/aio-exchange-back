@@ -106,6 +106,8 @@ export const SyncGlobalCurrency = async() => {
                 );
                 continue
             };
+
+
             await UpdateCurrency(
                 {
                     symbol:cSymbol.toUpperCase(),
