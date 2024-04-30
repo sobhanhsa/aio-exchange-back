@@ -5,16 +5,11 @@ import { CurrencyModel } from "../../models/currency.model";
 const delayMaker = (time:number) => new Promise(resolve => setTimeout(resolve, time));
 
 const fetcher = async(url:string) => {
-    try {
-        const res = await fetch(url);
-        if (!res.ok) {
-            throw new Error("failed to fetch");
-        };
-        return res.json();        
-    } catch (err:any) {
-        console.log("error in currency.provider fetcher : ",err?.message);
-        // throw new Error(err?.message);
-    }
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error("failed to fetch");
+    };
+    return res.json();        
 };
 
 type currencyType = {
@@ -84,58 +79,55 @@ export const SyncGlobalCurrency = async() => {
         await connectToDB();
 
 
-        (async() => {
-            for (let cSymbol of currencyNames) {
-                if (cSymbol === "irr") continue
-                const currencyUrl = ` https://api.priceto.day/v1/latest/irr/${cSymbol}`;
-                const currency : currencyType = await fetcher(currencyUrl);
-                
-                const existed = await 
-                FindCurrencyByeSymbol(cSymbol.toUpperCase())
-                &&
-                true
-                ;
+        for (let cSymbol of currencyNames) {
+            if (cSymbol === "irr") continue
+            const currencyUrl = ` https://api.priceto.day/v1/latest/irr/${cSymbol}`;
+            const currency : currencyType = await fetcher(currencyUrl);
             
+            const existed = await 
+            FindCurrencyByeSymbol(cSymbol.toUpperCase())
+            &&
+            true
+            ;
+        
 
-                if (!existed) {
-                    await CreateCurrency(
-                        {
-                            symbol: cSymbol.toUpperCase(),
-                            name:{
-                                en: symbolToNames[cSymbol].en,
-                                fa: symbolToNames[cSymbol].fa
-                            },
-                            time:new Date(currency.time),
-                            priceIrr:currency.price,
-                            currencyType:"currency",
-                        }
-                    );
-                    continue
-                };
-                await UpdateCurrency(
-                    {
-                        symbol:cSymbol.toUpperCase(),
-                    }
-                    ,
+            if (!existed) {
+                await CreateCurrency(
                     {
                         symbol: cSymbol.toUpperCase(),
                         name:{
                             en: symbolToNames[cSymbol].en,
                             fa: symbolToNames[cSymbol].fa
                         },
+                        time:new Date(currency.time),
                         priceIrr:currency.price,
                         currencyType:"currency",
-                        time:new Date(currency.time)
                     }
                 );
-                
-                
-                await delayMaker(100);
-            }     
-        })();
+                continue
+            };
+            await UpdateCurrency(
+                {
+                    symbol:cSymbol.toUpperCase(),
+                }
+                ,
+                {
+                    symbol: cSymbol.toUpperCase(),
+                    name:{
+                        en: symbolToNames[cSymbol].en,
+                        fa: symbolToNames[cSymbol].fa
+                    },
+                    priceIrr:currency.price,
+                    currencyType:"currency",
+                    time:new Date(currency.time)
+                }
+            );
+            
+            await delayMaker(100);
+        }     
     }   
     catch (err:any) {
-        console.log("error in get SyncGlobalCurrency : ",err.message);
+        console.error("error SyncGlobalCurrency : ",err.message);
         throw new Error(err.message);
     }
 };
