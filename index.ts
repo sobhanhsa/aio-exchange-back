@@ -12,6 +12,7 @@ import { SyncGlobalCryptoHistory } from "./providers/currency/history/cryptoCurr
 import { setAsyncInterval } from "./utils/asyncInterval.utils";
 import { SyncGlobalCurrencyHistory } from "./providers/currency/history/currencyHistory.provider";
 import { CurrencyModel } from "./models/currency.model";
+import cors from "cors";
 
 const port = process.env.PORT || 8000;
 
@@ -19,6 +20,15 @@ const app = express();
 
 app.use(cookieParser());
 app.use(express.json());
+
+const corsOptions = {
+    credentials:true,
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions));
+
 
 app.use("/user",userRouter);
 app.use("/currency",currencyRouter);
