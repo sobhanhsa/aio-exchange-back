@@ -3,6 +3,10 @@ import { FindAllCurrency, FindCurrencyByeSymbol } from "../db/currency/currency.
 import { CurrencyType } from "../models/currency.model";
 
 
+export async function syncCurrencyPrice(req:Request, res:Response) {
+
+}
+
 export async function getByeSymbolHandler(req:Request, res:Response) {
     const symbol = req.params.symbol;
     if (!symbol) return res.status(400).json({

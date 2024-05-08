@@ -15,7 +15,11 @@ export const SyncGlobalCrypto = async() => {
     try {
         const body = await fetcher();
         const currencies : any[] = body.result; 
+
+        //each currency price is usd based
+
         await connectToDB();
+
         currencies.forEach(async(c) => {
             //POST or UPDATE each currency
             const existed = await CurrencyModel.exists({
@@ -29,7 +33,9 @@ export const SyncGlobalCrypto = async() => {
                             en: c.name_en,
                             fa: c.name
                         },
-                        price:c.price,
+                        price:{
+                            usd:c.price,
+                        },
                         currencyType:"crypto",
                         cap:c.market_cap,
                         percentChangeWeek:c.percent_change_7d,
@@ -49,7 +55,9 @@ export const SyncGlobalCrypto = async() => {
                         en: c.name_en,
                         fa: c.name
                     },
-                    price:c.price,
+                    price:{
+                        usd:c.price
+                    },
                     currencyType:"crypto",
                     cap:c.market_cap,
                     time:new Date,

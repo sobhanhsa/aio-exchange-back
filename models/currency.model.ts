@@ -6,20 +6,24 @@ const currencySchema = new Schema({
             type:String
         },
         name:{
+            required:true,
             en:String,
             fa:String
         },
         cap:{
             type:Number,
         },
-        priceIrr:{
-            required:false,
-            type:Number,
-
-        },
         price:{
-            required:false,
-            type:Number
+            required:true,
+            type:{
+                irr:{
+                    type:Number,
+                },
+                usd:{
+                    required:true,
+                    type:Number,
+                }
+            }
         },
         percentChangeWeek:{
             type:Number

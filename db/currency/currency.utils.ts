@@ -6,7 +6,6 @@ export const CreateCurrency = async (
         symbol,
         name,
         price,
-        priceIrr,
         currencyType,
         cap,
         percentChangeWeek,
@@ -29,7 +28,6 @@ export const CreateCurrency = async (
             percentChangeWeek,
             percentChangeDay,
             time,
-            priceIrr
         });
     } catch (err:any) {
         throw new Error(err.messsage);
@@ -43,7 +41,6 @@ export const UpdateCurrency = async (
         symbol,
         name,
         price,
-        priceIrr,
         currencyType,
         cap,
         percentChangeWeek,
@@ -68,7 +65,6 @@ export const UpdateCurrency = async (
                 percentChangeWeek,
                 percentChangeDay,
                 time,
-                priceIrr
             }
         );
     } catch (err:any) {

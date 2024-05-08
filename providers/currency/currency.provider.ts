@@ -20,6 +20,7 @@ type currencyType = {
     low:number
 };
 
+// dolar price according to irr
 let dollarPrice : number | undefined;
 
 const symbolToNames = {
@@ -86,6 +87,8 @@ export const SyncGlobalCurrency = async() => {
             const currencyUrl = ` https://api.priceto.day/v1/latest/irr/${cSymbol}`;
             const currency : currencyType = await fetcher(currencyUrl);
             
+            // price is irr based
+
             if (cSymbol==="usd") {
                 dollarPrice = currency.price;
             }
@@ -95,30 +98,26 @@ export const SyncGlobalCurrency = async() => {
             &&
             true
             ;
-        
+            
+            if (!dollarPrice) {
+                throw new Error("dollar price is required !")
+            }
 
             if (!existed) {
                 await CreateCurrency(
-                    dollarPrice ? ({
+                    {
                         symbol: cSymbol.toUpperCase(),
                         name:{
                             en: symbolToNames[cSymbol].en,
                             fa: symbolToNames[cSymbol].fa
                         },
                         time:new Date(currency.time),
-                        priceIrr:currency.price,
                         currencyType:"currency",
-                        price:currency.price/dollarPrice,
-                    }) : ({
-                        symbol: cSymbol.toUpperCase(),
-                        name:{
-                            en: symbolToNames[cSymbol].en,
-                            fa: symbolToNames[cSymbol].fa
+                        price:{
+                            usd:currency.price/dollarPrice,
+                            irr:currency.price
                         },
-                        time:new Date(currency.time),
-                        priceIrr:currency.price,
-                        currencyType:"currency",
-                    })
+                    }
                 );
                 continue
             };
@@ -129,26 +128,19 @@ export const SyncGlobalCurrency = async() => {
                     symbol:cSymbol.toUpperCase(),
                 }
                 ,
-                dollarPrice ? ({
+                {
                     symbol: cSymbol.toUpperCase(),
                     name:{
                         en: symbolToNames[cSymbol].en,
                         fa: symbolToNames[cSymbol].fa
                     },
-                    priceIrr:currency.price,
-                    currencyType:"currency",
                     time:new Date(currency.time),
-                    price:currency.price/dollarPrice
-                }) : ({
-                    symbol: cSymbol.toUpperCase(),
-                    name:{
-                        en: symbolToNames[cSymbol].en,
-                        fa: symbolToNames[cSymbol].fa
-                    },
-                    priceIrr:currency.price,
                     currencyType:"currency",
-                    time:new Date(currency.time)
-                })
+                    price:{
+                        usd:currency.price/dollarPrice,
+                        irr:currency.price
+                    },
+                }
             );
             
             await delayMaker(100);
