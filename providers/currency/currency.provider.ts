@@ -20,6 +20,8 @@ type currencyType = {
     low:number
 };
 
+let dollarPrice : number | undefined;
+
 const symbolToNames = {
     'irr':{
         en:"iranian rial",
@@ -84,6 +86,10 @@ export const SyncGlobalCurrency = async() => {
             const currencyUrl = ` https://api.priceto.day/v1/latest/irr/${cSymbol}`;
             const currency : currencyType = await fetcher(currencyUrl);
             
+            if (cSymbol==="usd") {
+                dollarPrice = currency.price;
+            }
+
             const existed = await 
             FindCurrencyByeSymbol(cSymbol.toUpperCase())
             &&
@@ -93,7 +99,7 @@ export const SyncGlobalCurrency = async() => {
 
             if (!existed) {
                 await CreateCurrency(
-                    {
+                    dollarPrice ? ({
                         symbol: cSymbol.toUpperCase(),
                         name:{
                             en: symbolToNames[cSymbol].en,
@@ -102,7 +108,17 @@ export const SyncGlobalCurrency = async() => {
                         time:new Date(currency.time),
                         priceIrr:currency.price,
                         currencyType:"currency",
-                    }
+                        price:currency.price/dollarPrice,
+                    }) : ({
+                        symbol: cSymbol.toUpperCase(),
+                        name:{
+                            en: symbolToNames[cSymbol].en,
+                            fa: symbolToNames[cSymbol].fa
+                        },
+                        time:new Date(currency.time),
+                        priceIrr:currency.price,
+                        currencyType:"currency",
+                    })
                 );
                 continue
             };
@@ -113,7 +129,17 @@ export const SyncGlobalCurrency = async() => {
                     symbol:cSymbol.toUpperCase(),
                 }
                 ,
-                {
+                dollarPrice ? ({
+                    symbol: cSymbol.toUpperCase(),
+                    name:{
+                        en: symbolToNames[cSymbol].en,
+                        fa: symbolToNames[cSymbol].fa
+                    },
+                    priceIrr:currency.price,
+                    currencyType:"currency",
+                    time:new Date(currency.time),
+                    price:currency.price/dollarPrice
+                }) : ({
                     symbol: cSymbol.toUpperCase(),
                     name:{
                         en: symbolToNames[cSymbol].en,
@@ -122,7 +148,7 @@ export const SyncGlobalCurrency = async() => {
                     priceIrr:currency.price,
                     currencyType:"currency",
                     time:new Date(currency.time)
-                }
+                })
             );
             
             await delayMaker(100);
